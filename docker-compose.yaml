@@ -8,6 +8,7 @@ services:
     #   - ./frontend/public:/frontend/public
     # command: tail -f /dev/null #For Debugging
     command: npm run start
+    restart: always
 
   backend: # Fast Api Server
     image: neastman/mde:backend
@@ -20,6 +21,7 @@ services:
     command: poetry run uvicorn app.server:app --host 0.0.0.0 --port 4000 --reload
     environment: 
       - MONGO_URI=mongodb://mongoAdmin:m0ng0passw0rd@mongo:27017
+    restart: always
 
   mongo:
     image: mongo:latest # Use the official MongoDB image
@@ -27,7 +29,6 @@ services:
       - "27017:27017"
     volumes:
       - ./data:/data/db
-    
     environment:
       MONGO_INITDB_ROOT_USERNAME: mongoAdmin
       MONGO_INITDB_ROOT_PASSWORD: m0ng0passw0rd
@@ -42,6 +43,7 @@ services:
       - ME_CONFIG_MONGODB_URL=mongodb://mongoAdmin:m0ng0passw0rd@mongo:27017
     depends_on:
       - mongo
+    restart: always
 
   nginx:
     image: nginx:latest
@@ -54,10 +56,9 @@ services:
       - ./nginx/config:/etc/nginx/conf.d
     depends_on:
       - frontend
+    restart: always
 
 volumes:
   mongodata:
     driver: local
 version: '3.7'
-
-
